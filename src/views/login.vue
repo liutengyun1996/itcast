@@ -7,7 +7,7 @@
           <el-input v-model="loginForm.username" placeholder="请输入用户名" prefix-icon="myicon-user"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" placeholder="请输入密码" prefix-icon="myicon-key"></el-input>
+          <el-input v-model="loginForm.password" placeholder="请输入密码" prefix-icon="myicon-key" type="password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class="login-btn" @click="login">登录</el-button>
@@ -17,6 +17,8 @@
   </div>
 </template>
 <script>
+// 引入接口方法
+import { login } from '@/api/login_index.js'
 export default {
   data () {
     return {
@@ -37,7 +39,23 @@ export default {
       // 实现二次验证
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          console.log('可以发请求了')
+          login(this.loginForm)
+            .then((res) => {
+              if (res.data.meta.status === 200) {
+                console.log(res)
+                localStorage.setItem('itcast_35_token', res.data.data.token)
+                // 实现路由跳转
+                this.$router.push({ name: 'home' })
+              } else {
+                this.$message({
+                  message: res.data.meta.msg,
+                  type: 'warning'
+                })
+              }
+            })
+            .catch(() => {
+              this.$message.warning('服务器异常,请稍后重试')
+            })
         } else {
         //   console.log('用户输入的数据有误')
           this.$message.warning('请输入所有必填数据')
