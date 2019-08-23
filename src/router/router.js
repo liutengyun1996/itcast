@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import Login from '@/views/login.vue'
 import Home from '@/views/home.vue'
+import Welcome from '@/views/welcome.vue'
 Vue.use(VueRouter)
 
 // 创建路由对象
@@ -21,7 +22,16 @@ export default new VueRouter({
     {
       name: 'home',
       path: '/home',
-      component: Home
+      component: Home,
+      redirect: { name: 'welcome' },
+      children: [
+        {
+          name: 'welcome',
+          path: 'welcome',
+          component: Welcome
+
+        }
+      ]
     }
   ]
 })
