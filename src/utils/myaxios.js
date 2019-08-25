@@ -2,6 +2,7 @@ import axios from 'axios'
 // 设置基准路径
 axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
 
+// 添加请求拦截器:可以拦截每一个axios请求
 // 拦截器的本质并不是来发起请求的,而是对请求报文进行处理
 axios.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么:获取token,设置请求头
