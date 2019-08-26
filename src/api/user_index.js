@@ -32,3 +32,11 @@ export const grantUserRole = (data) => {
     data: { rid: data.rid }
   })
 }
+
+// 5.实现用户数据的删除
+export const delUserById = (id) => {
+  return axios({
+    url: `users/${id}`,
+    method: 'delete'
+  })
+}
