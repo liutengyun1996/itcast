@@ -14,3 +14,12 @@ export const addUser = (data) => {
 
   })
 }
+
+// 3.实现用户数据的编辑
+export const editUser = (data) => {
+  return axios({
+    url: `users/${data.id}`,
+    method: 'put',
+    data
+  })
+}
