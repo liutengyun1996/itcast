@@ -33,10 +33,10 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-            <el-button type="primary" icon="el-icon-edit" @click='showEditDialog(scope.row)'></el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row)"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="分配角色" placement="top">
-            <el-button type="success" icon="el-icon-share"></el-button>
+            <el-button type="success" icon="el-icon-share" @click='showGrantDialog(scope.row)'></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="删除" placement="top">
             <el-button type="warning" icon="el-icon-delete"></el-button>
@@ -94,13 +94,48 @@
         <el-button type="primary" @click="edituser">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 分配角色对话框 -->
+    <el-dialog title="角色分配" :visible.sync="grantDialogFormVisible">
+      <el-form :model="grantForm" :label-width="'80px'">
+        <el-form-item label="用户名：">
+          <!-- <el-input v-model="grantForm.username" autocomplete="off" disabled style='width:100px'></el-input> -->
+          <span>{{grantForm.username}}</span>
+        </el-form-item>
+        <el-form-item label="角色：">
+          <!-- <el-select v-model="grantForm.rid" clearable placeholder="请选择" @change="getrid"> -->
+          <el-select v-model="grantForm.rid" clearable placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.value"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="grantDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="grantUser">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { getAllUsers, addUser, editUser } from '@/api/user_index.js'
+import { getAllUsers, addUser, editUser, grantUserRole } from '@/api/user_index.js'
+import { getAllRoleList } from '@/api/role_index.js'
 export default {
   data () {
     return {
+      // 角色列表
+      roleList: [],
+      grantDialogFormVisible: false,
+      grantForm: {
+        username: '',
+        // 用户id
+        id: '',
+        // 角色id
+        rid: ''
+      },
       editDialogFormVisible: false,
       editForm: {
         username: '',
@@ -170,6 +205,36 @@ export default {
     }
   },
   methods: {
+    // 打开分配角色对话框
+    showGrantDialog (row) {
+      console.log(row)
+      this.grantDialogFormVisible = true
+      this.grantForm.username = row.username
+      this.grantForm.id = row.id
+      // 修改后台代码,增加rid数据的返回
+      this.grantForm.rid = row.rid
+    },
+    // 为用户分配角色
+    grantUser () {
+      console.log(this.grantForm)
+      // 先判断用户是否选择的角色
+      if (this.grantForm.rid) {
+        grantUserRole(this.grantForm)
+          .then(res => {
+            console.log(res)
+            if (res.data.meta.status === 200) {
+              this.$message.success(res.data.meta.msg)
+              this.grantDialogFormVisble = false
+              this.init()
+            }
+          })
+          .catch(() => {
+            this.$message.success('用户编辑失败')
+          })
+      } else {
+        this.$message.error('请选择角色')
+      }
+    },
     // 实现用户编辑
     edituser () {
       editUser(this.editForm)
@@ -251,6 +316,17 @@ export default {
   },
   mounted () {
     this.init()
+    // 加载角色列表数据
+    getAllRoleList()
+      .then(res => {
+        console.log(res)
+        if (res.data.meta.status === 200) {
+          this.roleList = res.data.data
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 </script>
