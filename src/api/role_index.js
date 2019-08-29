@@ -32,3 +32,20 @@ export const addRole = (data) => {
     data
   })
 }
+
+// 5.编辑角色
+export const editRole = (data) => {
+  return axios({
+    url: `roles/${data.id}`,
+    method: 'put',
+    data
+  })
+}
+
+// 6.实现角色的删除
+export const delRoleById = (id) => {
+  return axios({
+    url: `roles/${id}`,
+    method: 'delete'
+  })
+}

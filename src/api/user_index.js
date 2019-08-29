@@ -11,7 +11,9 @@ export const getAllUsers = (params) => {
 // 2.实现用户数据的新增
 export const addUser = (data) => {
   return axios({
-
+    url: 'users',
+    method: 'post',
+    data
   })
 }
 
@@ -27,7 +29,7 @@ export const editUser = (data) => {
 // 4.实现用户角色的分配
 export const grantUserRole = (data) => {
   return axios({
-    url: `users/$(data.id)/role`,
+    url: `users/${data.id}/role`,
     method: 'put',
     data: { rid: data.rid }
   })

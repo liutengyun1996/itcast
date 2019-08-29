@@ -98,7 +98,7 @@
     <el-dialog title="角色分配" :visible.sync="grantDialogFormVisible">
       <el-form :model="grantForm" :label-width="'80px'">
         <el-form-item label="用户名：">
-          <!-- <el-input v-model="grantForm.username" autocomplete="off" disabled style='width:100px'></el-input> -->
+          <el-input v-model="grantForm.username" autocomplete="off" disabled style='width:100px'></el-input>
           <span>{{grantForm.username}}</span>
         </el-form-item>
         <el-form-item label="角色：">
@@ -164,7 +164,7 @@ export default {
         username: [
           {
             required: true,
-            $message: '请输入用户名',
+            message: '请输入用户名',
             trigger: 'blur'
           }
         ],
@@ -244,7 +244,7 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               })
-                .this.init()
+              this.init()
             } else {
               this.$message({
                 type: 'error',
@@ -284,7 +284,7 @@ export default {
             console.log(res)
             if (res.data.meta.status === 200) {
               this.$message.success(res.data.meta.msg)
-              this.grantDialogFormVisble = false
+              this.grantDialogFormVisible = false
               this.init()
             }
           })
